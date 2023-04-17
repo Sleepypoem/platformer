@@ -16,9 +16,11 @@ public class GamePanel extends JPanel {
 
     private int y = 0;
 
-    private int height = 100;
-
-    private int width = 100;
+    long lastcheck = 0;
+    private int rectHeight = 100;
+    private int rectWidth = 100;
+    private int frames = 0;
+    private int speed = 1;
 
     private Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK, Color.CYAN, Color.MAGENTA};
 
@@ -31,36 +33,44 @@ public class GamePanel extends JPanel {
     }
 
     public void changeSize(int size) {
-        this.height += size;
-        this.width += size;
-        repaint();
+        this.rectHeight += size;
+        this.rectWidth += size;
     }
 
     public void changeX(int x) {
         this.x += x;
-        repaint();
     }
 
     public void changeY(int y) {
         this.y += y;
-        repaint();
     }
 
     public void changeColor() {
         Graphics g = this.getGraphics();
         g.setColor(colors[(int) (Math.random() * colors.length)]);
-        repaint();
     }
 
     public void setRectPosition(int x, int y) {
         this.x = x;
         this.y = y;
-        repaint();
+    }
+
+    public void update() {
+        this.x += speed;
+        if (this.x >= 800 || this.x <= 0) {
+            speed *= -1;
+        }
+
+        this.y += speed;
+        if (this.y >= 600 || this.y <= 0) {
+            speed *= -1;
+        }
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(colors[(int) (Math.random() * colors.length)]);
-        g.fillRect(x, y, 0 + width, 0 + height);
+        g.setColor(Color.black);
+        g.fillRect(x, y, rectWidth, rectHeight);
+        update();
     }
 }
