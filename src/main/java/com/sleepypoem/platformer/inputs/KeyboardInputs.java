@@ -34,12 +34,6 @@ public class KeyboardInputs implements KeyListener {
             case KeyEvent.VK_D:
                 gamePanel.changeX(10);
                 break;
-            case KeyEvent.VK_UP:
-                gamePanel.changeSize(10);
-                break;
-            case KeyEvent.VK_DOWN:
-                gamePanel.changeSize(-10);
-                break;
         }
     }
 
