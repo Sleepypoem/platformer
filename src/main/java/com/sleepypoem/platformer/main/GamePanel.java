@@ -3,8 +3,12 @@ package com.sleepypoem.platformer.main;
 import com.sleepypoem.platformer.inputs.KeyboardInputs;
 import com.sleepypoem.platformer.inputs.MouseInputs;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class GamePanel extends JPanel {
 
@@ -12,30 +16,45 @@ public class GamePanel extends JPanel {
 
     private MouseInputs mouseInputs;
 
+    private BufferedImage bufferedImage;
+
     private int x = 0;
 
     private int y = 0;
-
-    long lastcheck = 0;
     private int rectHeight = 100;
     private int rectWidth = 100;
-    private int frames = 0;
     private int speed = 1;
-
-    private Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK, Color.CYAN, Color.MAGENTA};
 
     public GamePanel() {
         keyboardInputs = new KeyboardInputs(this);
         mouseInputs = new MouseInputs(this);
+        importImage();
+        setPanelSize(1280, 800);
         this.addKeyListener(keyboardInputs); // Add keyboard inputs
         this.addMouseListener(mouseInputs); // Add mouse inputs
         this.addMouseMotionListener(mouseInputs); // Add mouse motion inputs
     }
 
-    public void changeSize(int size) {
-        this.rectHeight += size;
-        this.rectWidth += size;
+    public void importImage() {
+        InputStream inputStream = getClass().getResourceAsStream("/player_sprites.png");
+        if (inputStream == null) {
+            throw new RuntimeException("Image not found!");
+        }
+
+        try {
+            bufferedImage = ImageIO.read(inputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    public void setPanelSize(int width, int height) {
+        Dimension dimension = new Dimension(width, height);
+        this.setPreferredSize(dimension);
+        this.setMaximumSize(dimension);
+        this.setMinimumSize(dimension);
+    }
+
 
     public void changeX(int x) {
         this.x += x;
@@ -45,32 +64,8 @@ public class GamePanel extends JPanel {
         this.y += y;
     }
 
-    public void changeColor() {
-        Graphics g = this.getGraphics();
-        g.setColor(colors[(int) (Math.random() * colors.length)]);
-    }
-
-    public void setRectPosition(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public void update() {
-        this.x += speed;
-        if (this.x >= 800 || this.x <= 0) {
-            speed *= -1;
-        }
-
-        this.y += speed;
-        if (this.y >= 600 || this.y <= 0) {
-            speed *= -1;
-        }
-    }
 
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.black);
-        g.fillRect(x, y, rectWidth, rectHeight);
-        update();
+        g.drawImage(bufferedImage.getSubimage(0, 0, 64, 40), x, y, rectWidth, rectHeight, null);
     }
 }
